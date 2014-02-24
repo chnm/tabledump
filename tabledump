@@ -1,0 +1,55 @@
+#!/bin/bash
+
+#-----------------------------------------#
+#           Ammon Shepherd                #
+#              08.03.10                   #
+#  Dump a database with only the tables   #
+#   containing the prefix given.          #
+#-----------------------------------------#
+
+set -e # End the script if any statement returns a non-true return value
+set -u # End script if an unset variable is encountered.
+
+WD=`pwd`
+CURDATE=`date +%F`
+
+echo "This will dump just the tables with the specified prefix from the specified database."
+
+echo -n "Enter the database name: "
+read dbase
+
+echo -n "Enter the table prefix: "
+read prefix
+
+echo -n "The mysql user: "
+read sqluser
+echo -n "The mysql pass: "
+read -s sqlpass
+
+# Get list of tables with the desired prefix
+list=( $(mysql -u$sqluser -p$sqlpass $dbase --raw --silent --silent --execute="SHOW TABLES;") )
+
+for tablename in ${list[@]}
+do
+    if [[ "$tablename" =~ $prefix ]]; then
+        tablelist+="$tablename "
+    fi
+done
+
+echo
+echo "Here are the tables to be dumped: $tablelist"
+
+echo
+echo -n "Continue [y/n]:"
+read cont
+
+if [ "y" == $cont ]; then
+    `mysqldump -u$sqluser -p$sqlpass --opt $dbase $tablelist > ${dbase}_${prefix}${CURDATE}_BACKUP.sql`
+    echo -e "\nBackup file created at ${WD}/${dbase}_${prefix}${CURDATE}_BACKUP.sql"
+else
+    exit 1
+fi
+
+echo
+
+exit 0
