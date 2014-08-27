@@ -10,13 +10,13 @@ Some common examples:
 
 - MAMP on Mac OSX
 
-  DBPORT=8889
-  DBHOST=localhost
+	  DBPORT=8889
+	  DBHOST=localhost
 
 - Many default LAMP servers
   
-  DBPORT=3306
-  DBHOST=localhost
+	  DBPORT=3306
+	  DBHOST=localhost
 
 
 # How To Use
