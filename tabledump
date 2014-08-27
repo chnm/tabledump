@@ -2,7 +2,7 @@
 
 #-----------------------------------------#
 #           Ammon Shepherd                #
-#              08.03.10                   #
+#              08.27.14                   #
 #  Dump a database with only the tables   #
 #   containing the prefix given.          #
 #-----------------------------------------#
@@ -12,6 +12,9 @@ set -u # End script if an unset variable is encountered.
 
 WD=`pwd`
 CURDATE=`date +%F`
+
+DBPORT=8889
+DBHOST="localhost"
 
 echo "This will dump just the tables with the specified prefix from the specified database."
 
@@ -23,11 +26,9 @@ read prefix
 
 echo -n "The mysql user: "
 read sqluser
-echo -n "The mysql pass: "
-read -s sqlpass
 
 # Get list of tables with the desired prefix
-list=( $(mysql -u$sqluser -p$sqlpass $dbase --raw --silent --silent --execute="SHOW TABLES;") )
+list=( $(mysql -u$sqluser -p --host=$DBHOST --port=$DBPORT $dbase --raw --silent --silent --execute="SHOW TABLES;") )
 
 for tablename in ${list[@]}
 do
@@ -44,7 +45,7 @@ echo -n "Continue [y/n]:"
 read cont
 
 if [ "y" == $cont ]; then
-    `mysqldump -u$sqluser -p$sqlpass --opt $dbase $tablelist > ${dbase}_${prefix}${CURDATE}_BACKUP.sql`
+    mysqldump -u$sqluser -p --host=$DBHOST --port=$DBPORT --opt $dbase $tablelist > ${dbase}_${prefix}${CURDATE}_BACKUP.sql
     echo -e "\nBackup file created at ${WD}/${dbase}_${prefix}${CURDATE}_BACKUP.sql"
 else
     exit 1
