@@ -1,3 +1,6 @@
+# Archived
+RRCHNM archived this repository in February 2022. Last actual code activity was August 2014. If you need more information or to unarchive this repository, please contact us at webmaster at chnm.gmu.edu
+
 # TABLEDUMP
 
 Dump only the database tables with a given prefix from a MySQL database.
